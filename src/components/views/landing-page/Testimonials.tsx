@@ -4,7 +4,7 @@ const testimonials = [
   {
     id: "t1",
     quote:
-      "POSITIVE-Next has completely transformed my mindset. I'm more productive and happier than ever!",
+      "MINKA has completely transformed my mindset. I'm more productive and happier than ever!",
     author: "Sarah J., Entrepreneur",
     rating: 5,
   },
@@ -18,7 +18,7 @@ const testimonials = [
   {
     id: "t3",
     quote:
-      "I've tried many self-improvement apps, but POSITIVE-Next stands out with its practical approach.",
+      "I've tried many self-improvement apps, but MINKA stands out with its practical approach.",
     author: "Emily L., Life Coach",
     rating: 5,
   },

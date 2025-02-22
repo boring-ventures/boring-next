@@ -1,84 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Menu, X, Brain } from "lucide-react";
-import { AuthHeader } from "./auth-header";
+import { useAuth } from "@/providers/auth-provider";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  const handleDashboardClick = () => {
+    router.push('/dashboard');
+  };
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center space-x-2">
-            <Brain className="h-8 w-8 text-primary" />
-            <Link href="/" className="text-2xl font-bold text-primary">
-              POSITIVE-Next
+    <header className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <Link href="/" className="flex items-center">
+        <Image
+          src="/images/logo.png"
+          alt="Minka Logo"
+          width={100}
+          height={40}
+          className="h-10 w-auto"
+        />
+      </Link>
+
+      <nav className="hidden md:flex items-center gap-6">
+        <Link href="/donar" className="text-gray-600 hover:text-gray-900">
+          Donar
+        </Link>
+        <Link href="/crear-campana" className="text-gray-600 hover:text-gray-900">
+          Crear campaña
+        </Link>
+        <Link href="/nosotros" className="text-gray-600 hover:text-gray-900">
+          Nosotros
+        </Link>
+        <Link href="/ayuda" className="text-gray-600 hover:text-gray-900">
+          Ayuda
+        </Link>
+      </nav>
+
+      <div className="flex items-center gap-4">
+        {isLoading ? (
+          <div className="h-9 w-[100px] animate-pulse rounded-md bg-muted" />
+        ) : user ? (
+          <Button 
+            variant="outline" 
+            className="bg-white"
+            onClick={handleDashboardClick}
+          >
+            Dashboard
+          </Button>
+        ) : (
+          <>
+            <Link href="/sign-in">
+              <Button variant="outline" className="bg-white">
+                Ingresar
+              </Button>
             </Link>
-          </div>
-          <nav className="hidden md:flex space-x-8">
-            <Link
-              href="/#features"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Features
+            <Link href="/sign-up">
+              <Button className="bg-[#2F855A] hover:bg-[#276749] text-white">
+                Registrarse
+              </Button>
             </Link>
-            <Link
-              href="/#about"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/#testimonials"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Testimonials
-            </Link>
-          </nav>
-          <div className="hidden md:flex">
-            <AuthHeader />
-          </div>
-          <div className="md:hidden">
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
+          </>
+        )}
       </div>
-      {isMenuOpen && (
-        <div className="md:hidden bg-background">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link
-              href="/#features"
-              className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
-            >
-              Features
-            </Link>
-            <Link
-              href="/#about"
-              className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/#testimonials"
-              className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
-            >
-              Testimonials
-            </Link>
-            <div className="px-3 py-2">
-              <AuthHeader />
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

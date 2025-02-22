@@ -8,11 +8,11 @@ export default function About() {
     <section id="about" className="py-20 bg-secondary">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <BlurFade className="max-w-3xl mx-auto text-center">
-          <SparklesText text="About POSITIVE-Next">
+          <SparklesText text="About MINKA">
 
           </SparklesText>
           <p className="text-lg text-muted-foreground mb-12">
-            POSITIVE-Next is a revolutionary app designed to help you harness
+            MINKA is a revolutionary app designed to help you harness
             the power of your mind. Our mission is to empower individuals to
             overcome mental saboteurs and achieve their full potential.
           </p>
@@ -25,7 +25,7 @@ export default function About() {
             color="rgba(var(--primary), 0.5)"
           >
             <h3 className="text-2xl font-semibold text-foreground mb-4">
-              Why Choose POSITIVE-Next?
+              Why Choose MINKA?
             </h3>
             {[
               { id: "science", text: "Science-based approach" },
@@ -54,7 +54,7 @@ export default function About() {
               </h3>
               <p className="text-muted-foreground">
                 We envision a world where everyone has the tools and knowledge to
-                cultivate a positive, resilient mindset. Through POSITIVE-Next,
+                cultivate a positive, resilient mindset. Through MINKA,
                 we&apos;re making mental fitness accessible and engaging for all.
               </p>
             </BlurFade>

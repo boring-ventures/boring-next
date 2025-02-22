@@ -166,9 +166,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Correo electrónico</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" {...field} />
+                  <Input placeholder="nombre@ejemplo.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -180,9 +180,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Nombre de usuario</FormLabel>
                 <FormControl>
-                  <Input placeholder="johndoe" {...field} />
+                  <Input placeholder="juanperez" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -194,9 +194,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>Nombre completo</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input placeholder="Juan Pérez" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -208,7 +208,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             name="birthDate"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Date of birth</FormLabel>
+                <FormLabel>Fecha de nacimiento</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -250,7 +250,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Contraseña</FormLabel>
                 <FormControl>
                   <PasswordInput placeholder="********" {...field} />
                 </FormControl>
@@ -264,7 +264,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>Confirmar contraseña</FormLabel>
                 <FormControl>
                   <PasswordInput placeholder="********" {...field} />
                 </FormControl>
@@ -273,8 +273,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             )}
           />
 
-          <Button className="w-full" disabled={isLoading}>
-            Create Account
+          <Button className="w-full bg-[#2F855A] hover:bg-[#276749]" disabled={isLoading}>
+            Crear cuenta
           </Button>
         </form>
       </Form>
@@ -285,7 +285,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
+            O continuar con
           </span>
         </div>
       </div>
