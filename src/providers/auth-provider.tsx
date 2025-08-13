@@ -5,6 +5,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { User, Session } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import type { Profile } from "@/types/profile";
+import { getSiteUrl } from "@/lib/utils";
+import { authClient } from "@/lib/supabase/client";
 
 type AuthContextType = {
   user: User | null;
@@ -12,7 +14,16 @@ type AuthContextType = {
   profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string
+  ) => Promise<{
+    success: boolean;
+    user: User | null;
+    session: Session | null;
+    confirmEmail: boolean;
+    error: Error | null;
+  }>;
   signOut: () => Promise<void>;
 };
 
@@ -22,7 +33,13 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   isLoading: true,
   signIn: async () => {},
-  signUp: async () => {},
+  signUp: async () => ({
+    success: false,
+    user: null,
+    session: null,
+    confirmEmail: false,
+    error: null,
+  }),
   signOut: async () => {},
 });
 
@@ -47,6 +64,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Helper function to check if current path should not auto-redirect
+  const shouldNotAutoRedirect = (pathname: string) => {
+    const noRedirectPaths = [
+      "/reset-password",
+      "/forgot-password",
+      "/verify-email",
+      "/magic-link",
+      "/sign-in",
+      "/sign-up",
+    ];
+    return noRedirectPaths.some((path) => pathname.startsWith(path));
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -61,6 +91,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state change:", event, session);
+
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -72,9 +104,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setIsLoading(false);
 
+      // Handle different auth events
       if (event === "SIGNED_OUT") {
         router.push("/sign-in");
+      } else if (event === "SIGNED_IN" && session) {
+        // Only redirect to dashboard if we're not on auth pages or already on dashboard
+        if (typeof window !== "undefined") {
+          const currentPath = window.location.pathname;
+
+          // Don't redirect if user is on auth pages (like reset-password)
+          if (
+            !currentPath.startsWith("/dashboard") &&
+            !shouldNotAutoRedirect(currentPath) &&
+            currentPath === "/" // Only redirect from home page, let middleware handle dashboard routing
+          ) {
+            router.push("/dashboard");
+          }
+        }
       }
+      // Remove TOKEN_REFRESHED redirect to prevent conflicts with middleware
     });
 
     return () => {
@@ -95,11 +143,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) throw error;
+    try {
+      // Get the site URL from the environment or current location
+      const siteUrl = getSiteUrl();
+
+      // Use the clean auth client without middleware
+      const { data, error } = await authClient.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${siteUrl}/auth/callback`,
+          data: {
+            email_confirmed: false,
+          },
+        },
+      });
+
+      if (error) {
+        console.error("Sign up error:", error);
+        return {
+          success: false,
+          user: null,
+          session: null,
+          confirmEmail: false,
+          error,
+        };
+      }
+
+      console.log("Sign up successful:", data);
+      return {
+        success: true,
+        user: data.user,
+        session: data.session,
+        confirmEmail: !data.session, // If no session, email confirmation is required
+        error: null,
+      };
+    } catch (error) {
+      console.error("Sign up exception:", error);
+      return {
+        success: false,
+        user: null,
+        session: null,
+        confirmEmail: false,
+        error: error instanceof Error ? error : new Error("Unknown error"),
+      };
+    }
   };
 
   const signOut = async () => {
@@ -118,4 +206,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext); 
+export const useAuth = () => useContext(AuthContext);

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BadgeCheck, LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -47,10 +47,18 @@ export function ProfileDropdown() {
 
   // Get role display name
   const getRoleDisplay = (role: UserRole) => {
-    return role
-      .toString()
-      .replace("_", " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase());
+    switch (role) {
+      case UserRole.SUPER_ADMIN:
+        return "Super Administrador";
+      case UserRole.ADMIN:
+        return "Administrador";
+      case UserRole.PARENT:
+        return "Padre/Madre";
+      case UserRole.THERAPIST:
+        return "Terapeuta";
+      default:
+        return "Usuario";
+    }
   };
 
   return (
@@ -87,35 +95,21 @@ export function ProfileDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/profile">
-              <User className="mr-2 h-4 w-4" />
-              Profile
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
             <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
-              Settings
+              Configuración
             </Link>
           </DropdownMenuItem>
-          {profile.role === UserRole.SUPERADMIN && (
-            <DropdownMenuItem asChild>
-              <Link href="/admin">
-                <BadgeCheck className="mr-2 h-4 w-4" />
-                Admin
-              </Link>
-            </DropdownMenuItem>
-          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
             await fetch("/api/auth/signout", { method: "POST" });
-            window.location.href = "/login";
+            window.location.href = "/sign-in";
           }}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Log out
+          Cerrar Sesión
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

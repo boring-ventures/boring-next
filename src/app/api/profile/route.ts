@@ -56,7 +56,15 @@ export async function PUT(request: NextRequest) {
 
     const userId = session.user.id;
     const data = await request.json();
-    const { firstName, lastName, avatarUrl, active } = data;
+    const {
+      firstName,
+      lastName,
+      phone,
+      avatarUrl,
+      active,
+      acceptWhatsApp,
+      specialty,
+    } = data;
 
     // Update profile in the database
     const updatedProfile = await prisma.profile.update({
@@ -64,8 +72,11 @@ export async function PUT(request: NextRequest) {
       data: {
         firstName,
         lastName,
+        phone,
         avatarUrl,
         active,
+        acceptWhatsApp,
+        ...(specialty && { specialty }),
       },
     });
 
@@ -83,7 +94,15 @@ export async function PUT(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    const { userId, firstName, lastName, avatarUrl } = data;
+    const {
+      userId,
+      firstName,
+      lastName,
+      phone,
+      avatarUrl,
+      acceptWhatsApp,
+      role,
+    } = data;
 
     // If userId is provided directly (during signup flow)
     if (userId) {
@@ -105,9 +124,11 @@ export async function POST(request: NextRequest) {
           userId,
           firstName,
           lastName,
+          phone,
           avatarUrl,
+          acceptWhatsApp: acceptWhatsApp || false,
           active: true,
-          role: "USER",
+          role: role || "PARENT", // Default to PARENT role
         },
       });
 
@@ -147,9 +168,11 @@ export async function POST(request: NextRequest) {
         userId: authenticatedUserId,
         firstName,
         lastName,
+        phone,
         avatarUrl,
+        acceptWhatsApp: acceptWhatsApp || false,
         active: true,
-        role: "USER",
+        role: role || "PARENT", // Default to PARENT role
       },
     });
 

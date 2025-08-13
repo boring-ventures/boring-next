@@ -1,155 +1,284 @@
+import { SidebarData } from "../types";
 import {
-  AlertCircle,
-  AppWindow,
-  AudioWaveform,
-  Ban,
-  Bug,
-  CheckSquare,
-  Command,
-  GalleryVerticalEnd,
-  HelpCircle,
-  LayoutDashboard,
-  Lock,
-  LockKeyhole,
-  MessageSquare,
-  Settings,
-  ServerCrash,
-  UserX,
+  Home,
   Users,
+  Calendar,
+  FileText,
+  Receipt,
+  BookOpen,
+  Heart,
+  BarChart,
+  UserPlus,
+  UserCog,
+  CalendarPlus,
+  MessageSquare,
+  Clock,
+  CreditCard,
+  Package,
 } from "lucide-react";
-import type { SidebarData } from "../types";
 
-export const sidebarData: SidebarData = {
-  user: {
-    name: "satnaing",
-    email: "satnaingdev@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Shadcn Admin",
-      logo: Command,
-      plan: "Vite + ShadcnUI",
-    },
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-  ],
-  navGroups: [
-    {
-      title: "General",
-      items: [
-        {
-          title: "Dashboard",
-          url: "/",
-          icon: LayoutDashboard,
+export const getRoleBasedSidebarData = (
+  userRole: string,
+  specialty?: string
+): SidebarData => {
+  const baseTeam = {
+    name: "Vivir Feliz",
+    logo: Heart,
+    plan: "Centro de Terapia Infantil",
+  };
+
+  switch (userRole) {
+    case "SUPER_ADMIN":
+      return {
+        user: {
+          name: "Super Administrador",
+          email: "superadmin@vivirfeliz.com",
+          avatar: "/avatars/superadmin.png",
         },
-        {
-          title: "Tasks",
-          url: "/tasks",
-          icon: CheckSquare,
+        teams: [baseTeam],
+        navGroups: [
+          {
+            title: "Super Administración",
+            items: [
+              {
+                title: "Dashboard",
+                url: "/super-admin/dashboard",
+                icon: BarChart,
+              },
+              {
+                title: "Usuarios",
+                url: "/super-admin/users",
+                icon: Users,
+              },
+              {
+                title: "Servicios",
+                url: "/super-admin/services",
+                icon: Package,
+              },
+              {
+                title: "Terapeutas",
+                url: "/admin/therapists",
+                icon: UserCog,
+              },
+              {
+                title: "Usuarios",
+                url: "/admin/users",
+                icon: Users,
+              },
+            ],
+          },
+        ],
+      };
+
+    case "ADMIN":
+      return {
+        user: {
+          name: "Administrador",
+          email: "admin@vivirfeliz.com",
+          avatar: "/avatars/admin.png",
         },
-        {
-          title: "Apps",
-          url: "/apps",
-          icon: AppWindow,
-        },
-        {
-          title: "Chats",
-          url: "/chats",
-          badge: "3",
-          icon: MessageSquare,
-        },
-        {
-          title: "Users",
-          url: "/users",
-          icon: Users,
-        },
-      ],
-    },
-    {
-      title: "Pages",
-      items: [
-        {
-          title: "Auth",
-          icon: Lock,
-          items: [
+        teams: [baseTeam],
+        navGroups: [
+          {
+            title: "Administración",
+            items: [
+              {
+                title: "Dashboard",
+                url: "/admin/dashboard",
+                icon: BarChart,
+              },
+              {
+                title: "Terapeutas",
+                url: "/admin/therapists",
+                icon: UserCog,
+              },
+              {
+                title: "Nuevos pacientes",
+                url: "/admin/new-patients",
+                icon: UserPlus,
+              },
+              {
+                title: "Historial de pacientes",
+                url: "/admin/patients",
+                icon: Clock,
+              },
+              {
+                title: "Usuarios",
+                url: "/admin/users",
+                icon: Users,
+              },
+              {
+                title: "Solicitudes de Consulta",
+                url: "/admin/consultation-requests",
+                icon: CalendarPlus,
+              },
+              {
+                title: "Solicitudes de Entrevista",
+                url: "/admin/interview-requests",
+                icon: MessageSquare,
+              },
+              {
+                title: "Citas",
+                url: "/admin/appointments",
+                icon: Calendar,
+              },
+              {
+                title: "Informes",
+                url: "/admin/reports",
+                icon: FileText,
+              },
+            ],
+          },
+        ],
+      };
+
+    case "THERAPIST":
+      // Check if therapist is COORDINATOR
+      if (specialty === "COORDINATOR") {
+        return {
+          user: {
+            name: "Coordinador",
+            email: "coordinator@vivirfeliz.com",
+            avatar: "/avatars/therapist.png",
+          },
+          teams: [baseTeam],
+          navGroups: [
             {
-              title: "Sign In",
-              url: "/sign-in",
-            },
-            {
-              title: "Sign In (2 Col)",
-              url: "/sign-in-2",
-            },
-            {
-              title: "Sign Up",
-              url: "/sign-up",
-            },
-            {
-              title: "Forgot Password",
-              url: "/forgot-password",
-            },
-            {
-              title: "OTP",
-              url: "/otp",
+              title: "Mi Trabajo",
+              items: [
+                {
+                  title: "Dashboard",
+                  url: "/therapist/dashboard",
+                  icon: Home,
+                },
+                {
+                  title: "Pacientes",
+                  url: "/therapist/patients",
+                  icon: Users,
+                },
+                {
+                  title: "Citas",
+                  url: "/therapist/appointments",
+                  icon: Calendar,
+                },
+                {
+                  title: "Propuestas",
+                  url: "/therapist/proposals",
+                  icon: Receipt,
+                },
+                {
+                  title: "Informes",
+                  url: "/therapist/reports",
+                  icon: FileText,
+                },
+              ],
             },
           ],
+        };
+      }
+
+      // Default therapist navigation
+      return {
+        user: {
+          name: "Terapeuta",
+          email: "therapist@vivirfeliz.com",
+          avatar: "/avatars/therapist.png",
         },
-        {
-          title: "Errors",
-          icon: Bug,
-          items: [
-            {
-              title: "Unauthorized",
-              url: "/401",
-              icon: LockKeyhole,
-            },
-            {
-              title: "Forbidden",
-              url: "/403",
-              icon: UserX,
-            },
-            {
-              title: "Not Found",
-              url: "/404",
-              icon: AlertCircle,
-            },
-            {
-              title: "Internal Server Error",
-              url: "/500",
-              icon: ServerCrash,
-            },
-            {
-              title: "Maintenance Error",
-              url: "/503",
-              icon: Ban,
-            },
-          ],
+        teams: [baseTeam],
+        navGroups: [
+          {
+            title: "Mi Trabajo",
+            items: [
+              {
+                title: "Dashboard",
+                url: "/therapist/dashboard",
+                icon: BarChart,
+              },
+              {
+                title: "Mi Agenda",
+                url: "/therapist/agenda",
+                icon: Calendar,
+              },
+              {
+                title: "Mis Pacientes",
+                url: "/therapist/patients",
+                icon: Users,
+              },
+              {
+                title: "Análisis de Consulta",
+                url: "/therapist/analysis",
+                icon: BookOpen,
+              },
+            ],
+          },
+        ],
+      };
+
+    case "PARENT":
+      return {
+        user: {
+          name: "Padre/Madre",
+          email: "parent@vivirfeliz.com",
+          avatar: "/avatars/parent.png",
         },
-      ],
-    },
-    {
-      title: "Other",
-      items: [
-        {
-          title: "Settings",
-          icon: Settings,
-          url: "/settings",
+        teams: [baseTeam],
+        navGroups: [
+          {
+            title: "Mi Familia",
+            items: [
+              {
+                title: "Dashboard",
+                url: "/parent/dashboard",
+                icon: BarChart,
+              },
+              {
+                title: "Citas",
+                url: "/parent/appointments",
+                icon: Calendar,
+              },
+              {
+                title: "Documentos",
+                url: "/parent/documents",
+                icon: FileText,
+              },
+              {
+                title: "Pagos",
+                url: "/parent/payments",
+                icon: CreditCard,
+              },
+              {
+                title: "Progreso",
+                url: "/parent/progress",
+                icon: BarChart,
+              },
+            ],
+          },
+        ],
+      };
+
+    default:
+      return {
+        user: {
+          name: "Usuario",
+          email: "user@vivirfeliz.com",
+          avatar: "/avatars/default.png",
         },
-        {
-          title: "Help Center",
-          url: "/help-center",
-          icon: HelpCircle,
-        },
-      ],
-    },
-  ],
+        teams: [baseTeam],
+        navGroups: [
+          {
+            title: "Navegación",
+            items: [
+              {
+                title: "Dashboard",
+                url: "/dashboard",
+                icon: Home,
+              },
+            ],
+          },
+        ],
+      };
+  }
 };
+
+// Legacy export for backward compatibility
+export const sidebarData: SidebarData = getRoleBasedSidebarData("PARENT");
